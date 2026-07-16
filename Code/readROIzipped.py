@@ -300,9 +300,9 @@ for file in roi_files_filtered:
     tracks.sort()  # this sorts tracks
 
     # For each MGA_Track obtain length and mean grey
-    lough_transect_lengths = []
-    lough_transect_greys = []
-    lough_transect_densities = []
+    MGA_transect_lengths = []
+    MGA_transect_greys = []
+    MGA_transect_densities = []
 
     if tracks:  # if this is a vertical slab where we have done a MGA_Track
         RECTANGLES_dic = {'RECTS': [],
@@ -380,9 +380,9 @@ for file in roi_files_filtered:
             # Apply weight test density correction
             density_estimate_corr = density_estimate * pd.eval(Calibrations['Density_Correction_Factor'][df_index])
 
-            lough_transect_greys.append(greys.mean())
-            lough_transect_densities.append(density_estimate_corr)
-            lough_transect_lengths.append(track_length_cm)
+            MGA_transect_greys.append(greys.mean())
+            MGA_transect_densities.append(density_estimate_corr)
+            MGA_transect_lengths.append(track_length_cm)
 
             RECTANGLES_dic['RECTS'].append(mask)
             RECTANGLES_dic['xpos'].append((x1 + x2) / 2)
@@ -406,9 +406,9 @@ for file in roi_files_filtered:
         # plt.show()
 
     else:
-        lough_transect_lengths.append('NA')
-        lough_transect_greys.append('NA')
-        lough_transect_densities.append('NA')
+        MGA_transect_lengths.append('NA')
+        MGA_transect_greys.append('NA')
+        MGA_transect_densities.append('NA')
 
     # Complete TODO getting mean greys around AMR transects.
     OutlinesGreys = []
@@ -490,9 +490,9 @@ for file in roi_files_filtered:
     slab_measurements['Slab Weight_g'].append(slab_mass)
     slab_measurements['Slab_vol_cm3'].append(slab_vol_cm3)
     slab_measurements['MGA_TrackNames'].append(tracks)
-    slab_measurements['MGA_TrackLengths_cm'].append(lough_transect_lengths)
-    slab_measurements['MGA_TrackMeanGreys'].append(lough_transect_greys)
-    slab_measurements['MGA_TrackMeanDensities_gcm3'].append(lough_transect_densities)
+    slab_measurements['MGA_TrackLengths_cm'].append(MGA_transect_lengths)
+    slab_measurements['MGA_TrackMeanGreys'].append(MGA_transect_greys)
+    slab_measurements['MGA_TrackMeanDensities_gcm3'].append(MGA_transect_densities)
 
 final_df = pd.DataFrame.from_dict(slab_measurements)
 
