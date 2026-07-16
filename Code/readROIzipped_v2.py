@@ -26,11 +26,10 @@ import datetime
 warnings.filterwarnings('ignore')
 
 # defining paths OSX
-rois_dir = "/Volumes/Seagate Hub/PhD/CORAL_SCIENCE_STASH/ROIS"
-slabdir_raw = "/Volumes/Seagate Hub/PhD/CORAL_SCIENCE_STASH/Representative_Slabs_RAW_TIF"
-slabdir_bh = "/Volumes/Seagate Hub/PhD/CORAL_SCIENCE_STASH/Representative_Slabs_BH_TIF"
-excel_path = '/Users/leonardobertini/Desktop/Sclerochronology_Data.xlsx'  # this is where all calibration curve coefficients are saved
-dir1 = '/Volumes/Seagate Hub/PhD/CORAL_RECONS_RAW'
+rois_dir = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/ROIS"
+slabdir_raw = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Representative_Slabs_RAW_TIF"
+slabdir_bh = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Representative_Slabs_BH_TIF"
+excel_path = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Sclerochronology_Data.xlsx"  # this is where all calibration curve coefficients are saved
 
 # #Bristol ImagingLab Windows
 # rois_dir = "D:\\PhD\\CORAL_SCIENCE_STASH\\ROIS"
@@ -44,59 +43,12 @@ dir1 = '/Volumes/Seagate Hub/PhD/CORAL_RECONS_RAW'
 # excel_path = "D:\\Users\\leonardobertini\\Desktop\\Sclerochronology_Data.xlsx" # this is where all calibration curve coefficients are saved
 # dir1 = 'G:\\PhD\\CORAL_RECONS_RAW'
 
-
-# COMPLETE todo find slab dirs to then match with roi files generated via ImageJ (Fiji)
-slab_dirs = []
-for root, dirs, files in os.walk(dir1):
-    if 'Slabs' in os.path.abspath(root):
-        print(os.path.abspath(root))
-        slab_dirs.append(os.path.abspath(root))
-slab_dirs.sort()
-
 # COMPLETE TODO find all ROI zip files
 roi_files = []
 for each in os.listdir(rois_dir):
     if each.endswith('.zip'):
         roi_files.append(each)
 roi_files.sort()
-
-# # COMPLETE todo find matching tif slabs based on ROI name and copy to folder
-# for roi in roi_files:
-#     search_tag = roi.split('ROIS_')[1].split('.zip')[0].replace('_BH','')  # removing the 'BH' tag as we used BH and beautified images for coral dating
-#     for dir in slab_dirs:
-#         #print(dir)
-#         TIF_population = os.listdir(dir)
-#         for file in TIF_population:
-#             if search_tag in file and not os.path.isfile(os.path.join(slabdir_raw, file)):  # skip files already copied (avoid cases so rotated slabs are not overwritten)
-#                 print(search_tag)
-#                 # print(file)
-#                 # print(os.path.join(dir,file))
-#                 copy_path = os.path.join(slabdir_raw, file)
-#                 shutil.copyfile(os.path.join(dir, file), copy_path)  # copy the matching tif to slabdir_raw
-
-# COMPLETE TODO find matching BH tif slabs based on ROI name
-# dir2 = 'G:\\PhD\\CORAL_RECONS_BH'
-# # COMPLETE todo find slab dirs to then match with roi files generated via ImageJ (Fiji)
-# slab_dirs2 = []
-# for root, dirs, files in os.walk(dir2):
-#     if 'Slabs' in os.path.abspath(root):
-#         print(os.path.abspath(root))
-#         slab_dirs2.append(os.path.abspath(root))
-# slab_dirs2.sort()
-# #copying files to dedicated directory
-# for roi in roi_files:
-#     search_tag = roi.split('ROIS_')[1].split('.zip')[0]  # BH and beautified images for coral dating
-#     for dir in slab_dirs2:
-#         #print(dir)
-#         TIF_population = os.listdir(dir)
-#         for file in TIF_population:
-#             if search_tag in file and not os.path.isfile(os.path.join(slabdir_bh, file)):  # skip files already copied (avoid cases so rotated slabs are not overwritten)
-#                 print(search_tag)
-#                 # print(file)
-#                 # print(os.path.join(dir,file))
-#                 copy_path = os.path.join(slabdir_bh, file)
-#                 shutil.copyfile(os.path.join(dir, file), copy_path)  # copy the matching tif to slabdir_bh
-
 
 ##### Extracting measurements
 
@@ -294,7 +246,7 @@ for file in roi_files_filtered:
     # find the corners of the box
     tracks = []
     for key in roi.keys():
-        if 'Track' in key:
+        if 'Track' in key and 'Ageing' not in key:
             tracks.append(key)
 
     tracks.sort()  # this sorts tracks
