@@ -29,7 +29,7 @@ warnings.filterwarnings('ignore')
 rois_dir = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/ROIS"
 slabdir_raw = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Representative_Slabs_RAW_TIF"
 slabdir_bh = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Representative_Slabs_BH_TIF"
-excel_path = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Sclerochronology_Data.xlsx"  # this is where all calibration curve coefficients are saved
+excel_path = "/Users/leonardobertini/Desktop/DEMO_DATA_CORAL_TRACING/Signify_Sclerochronology_Data.xlsx"  # this is where all calibration curve coefficients are saved
 
 # #Bristol ImagingLab Windows
 # rois_dir = "D:\\PhD\\CORAL_SCIENCE_STASH\\ROIS"
@@ -152,7 +152,7 @@ for file in roi_files_filtered:
     # Get voxel size from spreadsheet
     found = False
     for name in DataRaw['Coral Colony']:
-        slabfile_clean = slabfile.split('.aligned.am')[0]
+        slabfile_clean = slabfile.split('_Axis')[0]
         if name in slabfile_clean:
             found = True
             df_index = DataRaw.index[DataRaw['Coral Colony'] == name][0]
@@ -160,7 +160,7 @@ for file in roi_files_filtered:
             print(f'Found voxel size for scan {name}: {vsize}')
             break
     if not found:
-        print(f'The voxel size from scan {slabfile.split(".aligned.am")[0]} was not found')
+        print(f'The voxel size from scan {slabfile.split("_Axis")[0]} was not found')
 
     slab_area_mm2 = slab_area * vsize ** 2  # area in pixels x (voxel_size)^2
     slab_area_cm2 = slab_area_mm2 * 0.01
@@ -175,7 +175,7 @@ for file in roi_files_filtered:
     # find coefficients for specific scan
     found = False
     for name in Calibrations['Scan_name']:
-        slabfile_clean = slabfile.split('.aligned.am')[0].replace('_BH', '')
+        slabfile_clean = slabfile.split('_Axis')[0]#.replace('_BH', '')
         if name in slabfile_clean:
             found = True
             df_index = Calibrations.index[Calibrations['Scan_name'] == name][0]
@@ -183,7 +183,7 @@ for file in roi_files_filtered:
             print(f'Found coefficients for scan {name}: {coeffs}')
             break
     if not found:
-        print(f'The coefficients from scan {slabfile.split(".aligned.am")[0]} were not found')
+        print(f"The coefficients from scan {slabfile.split('_Axis')[0]} were not found")
 
     name = slabfile_clean  # this is the name to append to all saved images in the TO_CHECK folder
     img = []
@@ -215,6 +215,8 @@ for file in roi_files_filtered:
     slab_greys = np.extract(mask_slab, img)
 
     # apply calibration curve to mean grey to retrieve densities and total slab weight
+    coeffs = [0 if item == '' else item for item in coeffs ] #one pass zeroing in case linear fit so polinomial 3deg reduce to linear.
+
     a, b, c, d = coeffs
     func_p = (lambda x, a, b, c, d: a * (x ** 3) + b * (
             x ** 2) + c * x + d)  # define function to find inverse with the coefficients found
